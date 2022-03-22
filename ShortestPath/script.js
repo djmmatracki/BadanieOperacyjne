@@ -10,25 +10,64 @@ function getRandomInt(min, max) {
 function createPoints(number) {
     let points = [];
     for (let i=0; i <= number; ++i) {
-        points.push([getRandomInt(0, 900), getRandomInt(0, 700)])
+        points.push([getRandomInt(0, 300), getRandomInt(0, 100)])
     }
     return points;
 }
 
 
-function dijkstra(start, end) {
+function dijkstra(M, start, end) {
+    const N = M.length;
+    let shortestDistList = [];
+    shortestDistList.fill(Infinity, 0, N-1);
 
+    let prevVertex = [];
+    prevVertex.fill(0, 0, N-1);
+
+    let visited = [];
+    let current = start;
+
+    while (visited.length < N) {
+        visited.push(current);
+        minimalNode = current;
+        minimal = Infinity;
+
+        for (let i=0; i < N; ++i) {
+            if ((M[current][i] > 0) & (!visited.includes(i))) {
+                if (shortestDistList[current] + M[current][i] < shortestDistList[i]) {
+                    shortestDistList[i] = shortestDistList[current] + M[current][i];
+                    prevVertex[i] = current + 1;
+                }
+
+                if (minimal > M[current][i]) {
+                    minimalNode = i;
+                    minimal = M[current][i];
+                }
+            }
+        }
+        current = minimalNode
+    }
+
+    let res = [];
+    let i = start;
+    let j = end;
+
+    while (i != j) {
+        res.push((prevVertex[j], j));
+        j = prevVertex[j];
+    }
+    return res;
 }
 
 
 function addPoints(points) {
     points.forEach(element => {
-        const point = document.createElement('div');
-        point.className = 'point';
-        point.style.left = `${element[0]}px`;
-        point.style.top = `${element[1]}px`;
+        var c = document.getElementById("main");
+        var ctx = c.getContext("2d");
 
-        document.getElementById('main').appendChild(point);
+        ctx.beginPath();
+        ctx.arc(element[0], element[1], 1, 0, 2 * Math.PI);
+        ctx.stroke();
     });
 }
 
@@ -38,11 +77,15 @@ const eucDist = (P1, P2) => {
 
 const fillMatrix = (points) => {
     let M = [];
-    M.fill([], n);
-    M.forEach(element => {
-        element.fill(0, n);
-    });
+    const n = points.length;
 
+
+    for (let i = 0; i < n; ++i){
+        M.push([])
+        for (let j = 0; j < n; ++j) {
+            M[i].push(0);
+        }
+    }
 
     for (let i = 0; i < n; ++i){
         for (let j = 0; j < n; ++j) {
@@ -53,60 +96,34 @@ const fillMatrix = (points) => {
     return M;
 }
 
-function dijkstra() {
-    return path;
-}
-
 function drawLine(P1, P2) {
+    const canvas = document.getElementById('main');
 
-    const line = document.createElement('div');
-    const angle = Math.atan2(P2[1] - P1[1], P2[0] - P1[0]) * 180 / Math.PI;
-    const distance = eucDist(P1, P2);
+    if (!canvas.getContext) {
+        return;
+    }
+    const ctx = canvas.getContext('2d');
 
-    // if(pointB.left < pointA.left) {
-    //     $(line).offset({top: pointA.top + pointAcenterY, left: pointB.left + pointBcenterX});
-    //   } else {
-    //     $(line).offset({top: pointA.top + pointAcenterY, left: pointA.left + pointAcenterX});
+    // set line stroke and line width
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 1;
 
-    // Set Angle
-    line.style.transform = 'rotate(' + angle + 'deg)'
-    line.className = "line";
-  
-    // Set Width
-    line.style.width = distance + 'px'
-    line.style.height = '10px'
-                    
-    // Set Position
-    line.style.position = "absolute"
-    line.style.backgroundColor = "black"
-
-    line.style.top = `${(distance / 2) * Math.sin((Math.PI * angle) / 180)}px`;
-    line.style.left = `${(distance / 2) * Math.cos((Math.PI * angle) / 180)}px`;
-    
-    document.getElementById('main').appendChild(line);
+    // draw a red line
+    ctx.beginPath();
+    ctx.moveTo(P1[0], P1[1]);
+    ctx.lineTo(P2[0], P2[1]);
+    ctx.stroke();
   }
 
 
 function main() {
-    // const n = 10;
-    // const points = createPoints(n);
+    const n = 10;
+    const points = createPoints(n);
 
-    // addPoints(points);
-    // const M = fillMatrix(points);
-
-    const point = document.createElement('div');
-    point.className = 'point';
-    point.style.left = `${0}px`;
-    point.style.top = `${0}px`;
-
-    const point2 = document.createElement('div');
-    point2.className = 'point';
-    point2.style.left = `${500}px`;
-    point2.style.top = `${500}px`;
-
-    document.getElementById('main').appendChild(point);
-    document.getElementById('main').appendChild(point2);
-    drawLine([0, 0], [500, 500])
+    addPoints(points);
+    const M = fillMatrix(points);
+    // drawLine([0, 0], [100, 100]);
+    console.log(dijkstra(M, 0, 5));
 }
 
 main()
