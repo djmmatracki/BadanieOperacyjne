@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Graph</title>
+    <link rel="stylesheet" type="text/css" href="{% static "css/index.css" %}" />
+    <style>
+        .main {
+            width: 900px;
+            height: 700px;
+            margin: auto;
+            margin-top: 100px;
+            background-color: lightblue;
+            position: relative;
+        }
+
+        .point {
+            width: 20px;
+            height: 20px;
+            background-color: black;
+            position: absolute;
+        }
+
+        .line:hover {
+            left: 0px;
+            background-color: green;
+        }
+
+        .form {
+            margin: 50px 0 100px 100px;
+        }
+    </style>
+  </head>
+
+  <body>
+    <div id="main" class="main">
+    </div>
+
+    <div class="form">
+        <label for="start">Start:</label>
+        <input name="start">
+
+        <label for="end">End:</label>
+        <input name="end">
+
+        <button>start</button>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
