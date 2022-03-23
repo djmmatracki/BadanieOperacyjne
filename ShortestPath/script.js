@@ -41,14 +41,14 @@ const drawLine = (P1, P2, width=2, color="black") => {
 
 }
 
-const fillMatrix = (n) => {
+const fillMatrix = (n, screenWidth) => {
     let M = [];
     let points = [];
     let usedPoints = [];
 
     for (let i = 0; i < n; ++i){
         for (let j = 0; j < n; ++j) {
-            points.push([i*80, j*145]); // Tworze wsporzedne punktow
+            points.push([i*80, j*(1/7)*screenWidth]); // Tworze wsporzedne punktow
         }
     }
 
@@ -208,8 +208,8 @@ function main() {
         resetImage();
         const start = getRandomInt(0, 48);
         const end = getRandomInt(0, 48);
-
-        const [M, points] = fillMatrix(7);
+        
+        const [M, points] = fillMatrix(7, window.screen.width);
         drawPoints(points, start, end);
 
         ended = false;
